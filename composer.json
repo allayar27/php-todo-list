@@ -1,0 +1,17 @@
+{
+    "name": "todolist/app",
+    "description": "Simple To-Do List Application",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Core\\": "src/Core/",
+            "Controllers\\": "src/Controllers/",
+            "Models\\": "src/Models/",
+            "Services\\": "src/Services",
+            "Repository\\": "src/Repository"
+        }
+    },
+    "require": {
+        "ext-pdo": "*"
+    }
+}
