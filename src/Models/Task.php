@@ -16,14 +16,14 @@ class Task
         $this->db = $db;
     }
 
-    public function all(): array
+    public function all(): array 
     {
         $stmt = $this->db->query("SELECT * FROM tasks");
         $stmt->setFetchMode(PDO::FETCH_ASSOC);
         return $stmt->fetchAll();
     }
 
-    public function create($data)
+    public function create($data): bool
     {
         $stmt = $this->db->prepare("INSERT INTO tasks (title, description, status) VALUES (?, ?, ?)");
         return $stmt->execute([$data['title'], $data['description'], 'pending']);
@@ -42,7 +42,7 @@ class Task
         $stmt = $this->db->prepare("UPDATE tasks SET title = ?, description = ?, status = ? WHERE id = ?");
         return $stmt->execute([$data['title'], $data['description'], $data['status'], $id]);
     }
-
+ 
     public function delete($id): bool
     {
         $stmt = $this->db->prepare("DELETE FROM tasks WHERE id = ?");

@@ -5,19 +5,22 @@ namespace Controllers;
 use Core\Database;
 use Models\Task;
 
+use Services\TaskService;
+
 class TaskController
 {
-    private Task $taskModel;
+    private TaskService $taskService;
 
     public function __construct()
     {
         $dbConnection = Database::getConnection();
-        $this->taskModel = new Task($dbConnection);
+        $taskModel = new Task($dbConnection);
+        $this->taskService = new TaskService($taskModel);
     }
 
     public function index()
     {
-        $tasks = $this->taskModel->all();
+        $tasks = $this->taskService->showAll();
         require '../src/Views/tasks/index.php';
     }
 
@@ -28,7 +31,7 @@ class TaskController
 
     public function store()
     {
-        $this->taskModel->create($_POST);
+        $this->taskService->insertTask($_POST);
         header('Location: /');
     }
 
@@ -37,32 +40,61 @@ class TaskController
         if (!isset($_GET['id'])) {
             die('Error: ID parameter is missing.');
         }
-        $id = $_GET['id'];
-        
-        $task = $this->taskModel->find($id);
+        $id = (int)$_GET['id'];
 
-        if (!$task) {
-            die('Error: Task not found.');
+        try {
+            $task = $this->taskService->getTaskById($id);
+        } catch (\RuntimeException $e) {
+            die($e->getMessage());
         }
         require '../src/Views/tasks/edit.php';
     }
 
     public function update()
     {
-        $this->taskModel->update($_POST['id'], $_POST);
-        header('Location: /');
-    }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = (int)$_POST['id'];
+            $data = [
+                'title' => $_POST['title'],
+                'description' => $_POST['description'],
+                'status' => $_POST['status']
+            ];
 
+            try {
+                $this->taskService->updateTask($id, $data);
+                header('Location: /');
+            }
+            catch (\Exception $e) {
+                die($e->getMessage());
+            }
+        }
+    }
+ 
     public function delete()
     {
-        $this->taskModel->delete($_POST['id']);
-        header('Location: /');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = (int) $_POST['id'];
+
+            try {
+                $this->taskService->deleteTask($id);
+                header('Location: /');
+            } catch (\Exception $e) {
+                die($e->getMessage());
+            }
+        }
     }
 
     public function complete()
     {
-        $this->taskModel->complete($_POST['id']);
-        // var_dump($r);
-        header('Location: /');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = (int) $_POST['id'];
+
+            try {
+                $this->taskService->completeTask($id);
+                header('Location: /');
+            } catch (\Exception $e) {
+                die($e->getMessage());
+            }
+        }
     }
 }

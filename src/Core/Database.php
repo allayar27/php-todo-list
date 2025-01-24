@@ -15,7 +15,7 @@ class Database
     {
         if (self::$instance === null) {
             try {
-                self::$instance = new PDO('mysql:host=db;dbname=todolist', 'root', 'password');
+                self::$instance = new PDO('mysql:host=db;dbname=tasks', 'root', 'password');
                 self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             } catch (PDOException $e) {
                 die('Database connection error: ' . $e->getMessage());

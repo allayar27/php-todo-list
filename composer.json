@@ -7,8 +7,7 @@
             "Core\\": "src/Core/",
             "Controllers\\": "src/Controllers/",
             "Models\\": "src/Models/",
-            "Services\\": "src/Services",
-            "Repository\\": "src/Repository"
+            "Services\\": "src/Services/"
         }
     },
     "require": {

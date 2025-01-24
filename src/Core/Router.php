@@ -24,7 +24,7 @@ class Router
 
         if (isset(self::$routes[$method][$path])) {
             $callback = self::$routes[$method][$path];
-            // print_r($callback);
+            var_dump($callback);
             if (is_array($callback) && is_string($callback[0])) {
                 $controller = new $callback[0];
                 $callback[0] = $controller;
